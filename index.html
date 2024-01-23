@@ -1,118 +1,177 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Tall IO Unblocked - ubg235 GameMonetize</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" style = "position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
-      <canvas id="unity-canvas" style = "position: absolute; width: 100%; height: 100%;"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
+<html manifest="offline.appcache">
 
-	  </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Slither.io Game Online Unblocked - ubg235 GameMonetize</title>
 
-	<script>
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var warningBanner = document.querySelector("#unity-warning");
+    <!-- Standardised web app manifest -->
+    <link rel="manifest" href="appmanifest.json" />
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+    <!-- Allow fullscreen mode on iOS devices. (These are Apple specific meta tags.) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" sizes="256x256" href="icon-256.png" />
+    <meta name="HandheldFriendly" content="true" />
+
+    <!-- Chrome for Android web app tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
+
+    <!-- All margins and padding must be zero for the canvas to fill the screen. -->
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
         }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
+
+        html,
+        body {
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            touch-action: none;
+            -ms-touch-action: none;
         }
-        updateBannerVisibility();
-      }
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Build.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/Build.data.unityweb",
-        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
-        codeUrl: buildUrl + "/Build.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "OrangeB",
-        productName: "Tall.io",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
-      };
+        canvas {
+            touch-action-delay: none;
+            touch-action: none;
+            -ms-touch-action: none;
+        }
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+        @font-face {
+            font-family: Oswald Regular;
+            src: url(oswald_regular.ttf);
+        }
+    </style>
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        container.className = "unity-mobile";
+</head>
 
-		canvas.style.width = "100%";
-        canvas.style.height = "100%";
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+<body>
+    <div id="fb-root"></div>
 
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-      }
-
-      loadingBar.style.display = "block";
-
-	  var myGameInstance = null;
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-			myGameInstance = unityInstance;
-			loadingBar.style.display = "none";
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+    <script>
+        // Issue a warning if trying to preview an exported project on disk.
+        (function() {
+            // Check for running exported on file protocol
+            if (window.location.protocol.substr(0, 4) === "file") {
+                alert("Exported games won't work until you upload them. (When running on the file:/// protocol, browsers block many features from working for security reasons.)");
+            }
+        })();
     </script>
-  <script>
+
+
+
+    <!-- The canvas must be inside a div called c2canvasdiv -->
+    <div id="c2canvasdiv">
+
+        <!-- The canvas the project will render to.  If you change its ID, don't forget to change the
+		ID the runtime looks for in the jQuery events above (ready() and cr_sizeCanvas()). -->
+        <canvas id="c2canvas" width="1280" height="960">
+			<!-- This text is displayed if the visitor's browser does not support HTML5.
+			You can change it, but it is a good idea to link to a description of a browser
+			and provide some links to download some popular HTML5-compatible browsers. -->
+			<h1>Your browser does not appear to support HTML5.  Try upgrading your browser to the latest version.  <a href="http://www.whatbrowser.org">What is a browser?</a>
+			<br/><br/><a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br/>
+			<a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br/>
+			<a href="https://www.google.com/chrome/">Google Chrome</a><br/>
+			<a href="http://www.apple.com/safari/download/">Apple Safari</a></h1>
+		</canvas>
+
+    </div>
+
+    <!-- Pages load faster with scripts at the bottom -->
+
+    <!-- Construct 2 exported games require jQuery. -->
+    <script src="jquery-2.1.1.min.js"></script>
+
+
+    <script type="text/javascript">
+        window.SDK_OPTIONS = {
+            gameId: "9ulpqmpu7cyccsyofda3kyumg20yl3fv",
+            onEvent: function(a) {
+                switch (a.name) {
+                    case "SDK_GAME_PAUSE":
+                        // pause game logic / mute audio
+                        break;
+                    case "SDK_GAME_START":
+                        // advertisement done, resume game logic and unmute audio
+                        break;
+                    case "SDK_READY":
+                        // when sdk is ready
+                        break;
+                }
+            }
+        };
+        (function(a, b, c) {
+            var d = a.getElementsByTagName(b)[0];
+            a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "patch/js/gm-sdk.js", d.parentNode.insertBefore(a, d))
+        })(document, "script", "gamemonetize-sdk");
+    </script>
+
+   
+
+
+
+    <!-- The runtime script.  You can rename it, but don't forget to rename the reference here as well.
+    This file will have been minified and obfuscated if you enabled "Minify script" during export. -->
+    <script src="c2runtime.js"></script>
+
+    <script>
+        // Start the Construct 2 project running on window load.
+        jQuery(document).ready(function() {
+            // Create new runtime using the c2canvas
+            cr_createRuntime("c2canvas");
+        });
+
+        // Pause and resume on page becoming visible/invisible
+        function onVisibilityChanged() {
+            if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden)
+                cr_setSuspended(true);
+            else
+                cr_setSuspended(false);
+        };
+
+        document.addEventListener("visibilitychange", onVisibilityChanged, false);
+        document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+        document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+        document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
+
+        function OnRegisterSWError(e) {
+            console.warn("Failed to register service worker: ", e);
+        };
+
+        // Runtime calls this global method when ready to start caching (i.e. after startup).
+        // This registers the service worker which caches resources for offline support.
+        window.C2_RegisterSW = function C2_RegisterSW() {
+            if (!navigator.serviceWorker)
+                return; // no SW support, ignore call
+
+            try {
+                navigator.serviceWorker.register("sw.js", {
+                        scope: "./"
+                    })
+                    .then(function(reg) {
+                        console.log("Registered service worker on " + reg.scope);
+                    })
+                    .catch(OnRegisterSWError);
+            } catch (e) {
+                OnRegisterSWError(e);
+            }
+        };
+    </script>
+
+<script>
 (function (a, b, c) {
    var d = a.getElementsByTagName(b)[0];
    a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "patch/js/gm-sdk-preload.js?v=" + Date.now(), d.parentNode.insertBefore(a, d))
 })(document, "script", "gamemonetize-preload-api");
 </script>
-    <script src="js/analytics_ubg_v1_4.js"></script>
-    <script src="js/ubg235_client_v1_1.js"></script>
+
+
 </body>
+
 </html>
